@@ -15,7 +15,9 @@ export default async function PacientesPage() {
         <ul>
           {pacientes.map((paciente) => (
             <li key={paciente.id}>
-              {paciente.nombre} {paciente.apellidos}
+              <Link href={`/pacientes/${paciente.id}`}>
+                {paciente.nombre} {paciente.apellidos}
+              </Link>
             </li>
           ))}
         </ul>

@@ -10,3 +10,15 @@ export async function listarPacientes() {
     orderBy: { createdAt: "desc" },
   });
 }
+
+export async function obtenerPaciente(id: string) {
+  return prisma.paciente.findUnique({ where: { id } });
+}
+
+export async function actualizarPaciente(id: string, data: PacienteInput) {
+  return prisma.paciente.update({ where: { id }, data });
+}
+
+export async function eliminarPaciente(id: string) {
+  return prisma.paciente.delete({ where: { id } });
+}
