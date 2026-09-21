@@ -1,13 +1,7 @@
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/back/auth/auth";
+import { requireSession } from "@/back/auth/require-session";
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) {
-    redirect("/login");
-  }
+  const session = await requireSession();
 
   return (
     <main>
