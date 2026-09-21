@@ -21,6 +21,7 @@ model Paciente {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   sesiones        Sesion[]
+  tareas          Tarea[]
 }
 
 model User {
@@ -95,6 +96,19 @@ model Sesion {
   updatedAt       DateTime @updatedAt
   pacienteId      String
   paciente        Paciente @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+
+  @@index([pacienteId])
+}
+
+model Tarea {
+  id          String    @id @default(uuid())
+  titulo      String
+  completada  Boolean   @default(false)
+  fecha       DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  pacienteId  String?
+  paciente    Paciente? @relation(fields: [pacienteId], references: [id], onDelete: SetNull)
 
   @@index([pacienteId])
 }
