@@ -20,6 +20,7 @@ model Paciente {
   notas           String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  sesiones        Sesion[]
 }
 
 model User {
@@ -83,4 +84,17 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Sesion {
+  id              String   @id @default(uuid())
+  fecha           DateTime
+  duracionMinutos Int
+  observaciones   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  pacienteId      String
+  paciente        Paciente @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+
+  @@index([pacienteId])
 }

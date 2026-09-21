@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import { obtenerPaciente } from "@/back/services/pacientes";
+import { listarSesionesDePaciente } from "@/back/services/sesiones";
 import { actualizarPacienteAction, eliminarPacienteAction } from "@/back/actions/pacientes";
+import { crearSesionAction } from "@/back/actions/sesiones";
 import { PacienteForm } from "@/front/components/pacientes/PacienteForm";
+import { SesionForm } from "@/front/components/sesiones/SesionForm";
 
 export default async function PacienteDetailPage({
   params,
@@ -15,8 +18,11 @@ export default async function PacienteDetailPage({
     notFound();
   }
 
+  const sesiones = await listarSesionesDePaciente(paciente.id);
+
   const actualizarConId = actualizarPacienteAction.bind(null, paciente.id);
   const eliminarConId = eliminarPacienteAction.bind(null, paciente.id);
+  const crearSesionConId = crearSesionAction.bind(null, paciente.id);
 
   return (
     <main>
@@ -35,6 +41,22 @@ export default async function PacienteDetailPage({
       <form action={eliminarConId}>
         <button type="submit">Eliminar paciente</button>
       </form>
+
+      <h2>Sesiones</h2>
+      <SesionForm action={crearSesionConId} />
+
+      {sesiones.length === 0 ? (
+        <p>Todavía no hay sesiones registradas.</p>
+      ) : (
+        <ul>
+          {sesiones.map((sesion) => (
+            <li key={sesion.id}>
+              {sesion.fecha.toLocaleDateString()} — {sesion.duracionMinutos} min
+              {sesion.observaciones && <p>{sesion.observaciones}</p>}
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
