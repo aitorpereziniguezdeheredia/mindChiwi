@@ -19,3 +19,16 @@ export async function toggleTareaCompletada(id: string, completada: boolean) {
 export async function eliminarTarea(id: string) {
   return prisma.tarea.delete({ where: { id } });
 }
+
+export async function listarTareasPendientes(limite = 5) {
+  return prisma.tarea.findMany({
+    where: { completada: false },
+    orderBy: { createdAt: "desc" },
+    take: limite,
+    include: { paciente: true },
+  });
+}
+
+export async function contarTareasPendientes() {
+  return prisma.tarea.count({ where: { completada: false } });
+}

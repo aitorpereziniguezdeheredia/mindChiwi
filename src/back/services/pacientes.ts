@@ -22,3 +22,14 @@ export async function actualizarPaciente(id: string, data: PacienteInput) {
 export async function eliminarPaciente(id: string) {
   return prisma.paciente.delete({ where: { id } });
 }
+
+export async function listarPacientesRecientes(limite = 5) {
+  return prisma.paciente.findMany({
+    orderBy: { updatedAt: "desc" },
+    take: limite,
+  });
+}
+
+export async function contarPacientes() {
+  return prisma.paciente.count();
+}

@@ -11,3 +11,22 @@ export async function listarSesionesDePaciente(pacienteId: string) {
     orderBy: { fecha: "desc" },
   });
 }
+
+export async function listarProximasSesiones(limite = 5) {
+  return prisma.sesion.findMany({
+    where: { fecha: { gte: new Date() } },
+    orderBy: { fecha: "asc" },
+    take: limite,
+    include: { paciente: true },
+  });
+}
+
+export async function contarSesionesEstaSemana() {
+  const inicioSemana = new Date();
+  inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay());
+  inicioSemana.setHours(0, 0, 0, 0);
+
+  return prisma.sesion.count({
+    where: { fecha: { gte: inicioSemana } },
+  });
+}
