@@ -1,69 +1,68 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <header className="max-w-5xl mx-auto px-7 pt-7 flex items-center justify-between">
+        <div className="font-display text-xl font-semibold">
+          Mind<span className="text-[var(--clay)]">Chiwi</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link
+          href="/login"
+          className="rounded-lg bg-[var(--pine)] text-[var(--panel)] px-5 py-2.5 text-sm font-medium"
+        >
+          Entrar
+        </Link>
+      </header>
+
+      <section className="max-w-5xl mx-auto px-7 pt-16 pb-10">
+        <h1 className="font-display font-medium text-4xl md:text-5xl leading-tight max-w-[13ch]">
+          Tu día a día con cada niño, en un solo lugar.
+        </h1>
+        <p className="mt-5 text-lg text-[var(--ink-soft)] max-w-[46ch]">
+          MindChiwi es un espacio de trabajo pensado para psicólogas y psicólogos infantiles:
+          agenda, fichas de pacientes, sesiones y objetivos, sin hojas sueltas ni carpetas dispersas.
+        </p>
+        <div className="mt-7 flex gap-4 flex-wrap items-center">
+          <Link
+            href="/registro"
+            className="rounded-lg bg-[var(--pine)] text-[var(--panel)] px-6 py-3 text-sm font-medium"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Crear cuenta
+          </Link>
+          <Link href="/login" className="text-sm text-[var(--ink-soft)] underline">
+            Ya tengo cuenta
+          </Link>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-7 py-14">
+        <p className="font-display text-2xl font-medium max-w-[32ch] leading-snug">
+          Todo lo que hoy llevas en la cabeza, en papel o en varias apps, aquí vive en un mismo lugar.
+        </p>
+        <p className="mt-4 text-[var(--ink-soft)] max-w-[52ch]">
+          Calendario, pacientes, sesiones y tareas conectados entre sí — pensado junto a una
+          psicóloga infantil, no adivinado desde fuera.
+        </p>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-7 py-14 grid gap-6 md:grid-cols-2">
+        {[
+          { titulo: "Calendario claro", texto: "Sesiones y tareas de la semana, de un vistazo." },
+          { titulo: "Ficha por paciente", texto: "Datos, sesiones y notas, siempre a mano." },
+          { titulo: "Seguimiento de objetivos", texto: "En qué está trabajando cada paciente." },
+          { titulo: "Tareas con paciente opcional", texto: "Lo que toca hacer, ligado a quien corresponda." },
+        ].map((item) => (
+          <div key={item.titulo} className="rounded-2xl bg-[var(--panel)] border border-[var(--line)] p-6">
+            <h3 className="font-display text-lg font-medium mb-2">{item.titulo}</h3>
+            <p className="text-sm text-[var(--ink-soft)]">{item.texto}</p>
+          </div>
+        ))}
+      </section>
+
+      <footer className="max-w-5xl mx-auto px-7 py-10 text-sm text-[var(--ink-soft)]">
+        MindChiwi — herramienta para psicología infantil
+      </footer>
+    </>
   );
 }
