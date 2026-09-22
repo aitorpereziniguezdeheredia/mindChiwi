@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import type { PacienteFormState } from "@/back/actions/pacientes";
+import { FormField, inputStyles } from "@/front/components/ui/FormField";
+import { Button } from "@/front/components/ui/Button";
 
 type PacienteFormProps = {
   action: (prevState: PacienteFormState, formData: FormData) => Promise<PacienteFormState>;
@@ -19,28 +21,28 @@ export function PacienteForm({ action, defaultValues, submitLabel = "Guardar" }:
 
   return (
     <form action={formAction}>
-      <div>
-        <label htmlFor="nombre">Nombre</label>
-        <input id="nombre" name="nombre" defaultValue={defaultValues?.nombre} required />
-        {state?.error?.nombre && <p style={{ color: "red" }}>{state.error.nombre[0]}</p>}
-      </div>
-      <div>
-        <label htmlFor="apellidos">Apellidos</label>
-        <input id="apellidos" name="apellidos" defaultValue={defaultValues?.apellidos} required />
-        {state?.error?.apellidos && <p style={{ color: "red" }}>{state.error.apellidos[0]}</p>}
-      </div>
-      <div>
-        <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
-        <input id="fechaNacimiento" name="fechaNacimiento" type="date" defaultValue={defaultValues?.fechaNacimiento} required />
-        {state?.error?.fechaNacimiento && <p style={{ color: "red" }}>{state.error.fechaNacimiento[0]}</p>}
-      </div>
-      <div>
-        <label htmlFor="notas">Notas</label>
-        <textarea id="notas" name="notas" defaultValue={defaultValues?.notas ?? ""} />
-      </div>
-      <button type="submit" disabled={isPending}>
+      <FormField label="Nombre" htmlFor="nombre" error={state?.error?.nombre?.[0]}>
+        <input id="nombre" name="nombre" defaultValue={defaultValues?.nombre} required className={inputStyles} />
+      </FormField>
+      <FormField label="Apellidos" htmlFor="apellidos" error={state?.error?.apellidos?.[0]}>
+        <input id="apellidos" name="apellidos" defaultValue={defaultValues?.apellidos} required className={inputStyles} />
+      </FormField>
+      <FormField label="Fecha de nacimiento" htmlFor="fechaNacimiento" error={state?.error?.fechaNacimiento?.[0]}>
+        <input
+          id="fechaNacimiento"
+          name="fechaNacimiento"
+          type="date"
+          defaultValue={defaultValues?.fechaNacimiento}
+          required
+          className={inputStyles}
+        />
+      </FormField>
+      <FormField label="Notas" htmlFor="notas">
+        <textarea id="notas" name="notas" defaultValue={defaultValues?.notas ?? ""} className={inputStyles} rows={3} />
+      </FormField>
+      <Button type="submit" disabled={isPending} className="w-full">
         {isPending ? "Guardando..." : submitLabel}
-      </button>
+      </Button>
     </form>
   );
 }

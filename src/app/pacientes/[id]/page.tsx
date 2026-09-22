@@ -1,17 +1,18 @@
 import { notFound } from "next/navigation";
 import { obtenerPaciente } from "@/back/services/pacientes";
 import { listarSesionesDePaciente } from "@/back/services/sesiones";
-import {
-  actualizarPacienteAction,
-  eliminarPacienteAction,
-} from "@/back/actions/pacientes";
+import { listarObjetivosDePaciente } from "@/back/services/objetivos";
+import { actualizarPacienteAction, eliminarPacienteAction } from "@/back/actions/pacientes";
 import { crearSesionAction } from "@/back/actions/sesiones";
+import { crearObjetivoAction } from "@/back/actions/objetivos";
 import { PacienteForm } from "@/front/components/pacientes/PacienteForm";
 import { SesionForm } from "@/front/components/sesiones/SesionForm";
-import { listarObjetivosDePaciente } from "@/back/services/objetivos";
-import { crearObjetivoAction } from "@/back/actions/objetivos";
 import { ObjetivoForm } from "@/front/components/objetivos/ObjetivoForm";
 import { ObjetivoItem } from "@/front/components/objetivos/ObjetivoItem";
+import { AppNav } from "@/front/components/layout/AppNav";
+import { PageHeader } from "@/front/components/ui/PageHeader";
+import { Card } from "@/front/components/ui/Card";
+import { Button } from "@/front/components/ui/Button";
 
 export default async function PacienteDetailPage({
   params,
@@ -25,59 +26,82 @@ export default async function PacienteDetailPage({
     notFound();
   }
 
-  const sesiones = await listarSesionesDePaciente(paciente.id);
-  const objetivos = await listarObjetivosDePaciente(paciente.id);
-  const crearObjetivoConId = crearObjetivoAction.bind(null, paciente.id);
+  const [sesiones, objetivos] = await Promise.all([
+    listarSesionesDePaciente(paciente.id),
+    listarObjetivosDePaciente(paciente.id),
+  ]);
 
   const actualizarConId = actualizarPacienteAction.bind(null, paciente.id);
   const eliminarConId = eliminarPacienteAction.bind(null, paciente.id);
   const crearSesionConId = crearSesionAction.bind(null, paciente.id);
+  const crearObjetivoConId = crearObjetivoAction.bind(null, paciente.id);
 
   return (
-    <main>
-      <h1>Editar paciente</h1>
-      <PacienteForm
-        action={actualizarConId}
-        submitLabel="Guardar cambios"
-        defaultValues={{
-          nombre: paciente.nombre,
-          apellidos: paciente.apellidos,
-          fechaNacimiento: paciente.fechaNacimiento.toISOString().split("T")[0],
-          notas: paciente.notas,
-        }}
-      />
+    <>
+      <AppNav />
+      <main className="max-w-5xl mx-auto px-7 py-10">
+        <PageHeader
+          title={`${paciente.nombre} ${paciente.apellidos}`}
+          action={
+            <form action={eliminarConId}>
+              <Button type="submit" variant="danger">
+                Eliminar paciente
+              </Button>
+            </form>
+          }
+        />
 
-      <form action={eliminarConId}>
-        <button type="submit">Eliminar paciente</button>
-      </form>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="md:col-span-2 max-w-lg">
+            <h2 className="font-display text-lg font-medium mb-3">Datos del paciente</h2>
+            <PacienteForm
+              action={actualizarConId}
+              submitLabel="Guardar cambios"
+              defaultValues={{
+                nombre: paciente.nombre,
+                apellidos: paciente.apellidos,
+                fechaNacimiento: paciente.fechaNacimiento.toISOString().split("T")[0],
+                notas: paciente.notas,
+              }}
+            />
+          </Card>
 
-      <h2>Sesiones</h2>
-      <SesionForm action={crearSesionConId} />
+          <Card>
+            <h2 className="font-display text-lg font-medium mb-3">Sesiones</h2>
+            <SesionForm action={crearSesionConId} />
+            {sesiones.length === 0 ? (
+              <p className="text-sm text-[var(--ink-soft)]">Todavía no hay sesiones registradas.</p>
+            ) : (
+              <ul>
+                {sesiones.map((sesion) => (
+                  <li key={sesion.id} className="border-t border-[var(--line)] first:border-t-0 py-3">
+                    <p className="text-sm">
+                      <span className="text-[var(--ink-soft)]">{sesion.fecha.toLocaleDateString()}</span> — {sesion.duracionMinutos} min
+                    </p>
+                    {sesion.observaciones && (
+                      <p className="text-sm text-[var(--ink-soft)] mt-1">{sesion.observaciones}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
 
-      {sesiones.length === 0 ? (
-        <p>Todavía no hay sesiones registradas.</p>
-      ) : (
-        <ul>
-          {sesiones.map((sesion) => (
-            <li key={sesion.id}>
-              {sesion.fecha.toLocaleDateString()} — {sesion.duracionMinutos} min
-              {sesion.observaciones && <p>{sesion.observaciones}</p>}
-            </li>
-          ))}
-        </ul>
-      )}
-      <h2>Objetivos</h2>
-      <ObjetivoForm action={crearObjetivoConId} />
-
-      {objetivos.length === 0 ? (
-        <p>Todavía no hay objetivos.</p>
-      ) : (
-        <ul>
-          {objetivos.map((o) => (
-            <ObjetivoItem key={o.id} objetivo={o} pacienteId={paciente.id} />
-          ))}
-        </ul>
-      )}
-    </main>
+          <Card>
+            <h2 className="font-display text-lg font-medium mb-3">Objetivos</h2>
+            <ObjetivoForm action={crearObjetivoConId} />
+            {objetivos.length === 0 ? (
+              <p className="text-sm text-[var(--ink-soft)]">Todavía no hay objetivos.</p>
+            ) : (
+              <ul>
+                {objetivos.map((o) => (
+                  <ObjetivoItem key={o.id} objetivo={o} pacienteId={paciente.id} />
+                ))}
+              </ul>
+            )}
+          </Card>
+        </div>
+      </main>
+    </>
   );
 }

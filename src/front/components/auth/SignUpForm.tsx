@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { signUp } from "@/front/lib/auth-client";
+import { Button } from "@/front/components/ui/Button";
+import { FormField, inputStyles } from "@/front/components/ui/FormField";
 
 export function SignUpForm() {
   const [name, setName] = useState("");
@@ -24,27 +26,39 @@ export function SignUpForm() {
       return;
     }
 
-    alert("¡Usuario creado!");
+    window.location.href = "/dashboard";
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Nombre</label>
-        <input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-      </div>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      </div>
-      <div>
-        <label htmlFor="password">Contraseña</label>
-        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
-      </div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <button type="submit" disabled={loading}>
+      <FormField label="Nombre" htmlFor="name">
+        <input id="name" value={name} onChange={(e) => setName(e.target.value)} required className={inputStyles} />
+      </FormField>
+      <FormField label="Email" htmlFor="email">
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={inputStyles}
+        />
+      </FormField>
+      <FormField label="Contraseña" htmlFor="password">
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={8}
+          className={inputStyles}
+        />
+      </FormField>
+      {error && <p className="text-sm text-[var(--clay)] mb-4">{error}</p>}
+      <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Creando cuenta..." : "Registrarme"}
-      </button>
+      </Button>
     </form>
   );
 }

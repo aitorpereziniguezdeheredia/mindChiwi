@@ -14,19 +14,24 @@ type ObjetivoItemProps = {
 };
 
 export function ObjetivoItem({ objetivo, pacienteId }: ObjetivoItemProps) {
+  const conseguido = objetivo.estado === "CONSEGUIDO";
+
   return (
-    <li>
+    <li className="flex items-center gap-3 border-t border-[var(--line)] first:border-t-0 py-3">
       <input
         type="checkbox"
-        checked={objetivo.estado === "CONSEGUIDO"}
+        checked={conseguido}
         onChange={(e) =>
           toggleObjetivoAction(objetivo.id, pacienteId, e.target.checked ? "CONSEGUIDO" : "ACTIVO")
         }
+        className="h-4 w-4 accent-[var(--pine)]"
       />
-      <span style={{ textDecoration: objetivo.estado === "CONSEGUIDO" ? "line-through" : "none" }}>
+      <span className={`text-sm flex-1 ${conseguido ? "line-through text-[var(--ink-soft)]" : ""}`}>
         {objetivo.nombre}
       </span>
-      <small> — {etiquetasCategoria[objetivo.categoria]}</small>
+      <span className="text-xs text-[var(--ink-soft)] bg-[var(--bg)] border border-[var(--line)] rounded-full px-2.5 py-1">
+        {etiquetasCategoria[objetivo.categoria]}
+      </span>
     </li>
   );
 }

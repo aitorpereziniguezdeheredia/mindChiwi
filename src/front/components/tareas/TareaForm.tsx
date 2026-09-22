@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import { crearTareaAction } from "@/back/actions/tareas";
+import { FormField, inputStyles } from "@/front/components/ui/FormField";
+import { Button } from "@/front/components/ui/Button";
 
 type TareaFormProps = {
   pacientes: { id: string; nombre: string; apellidos: string }[];
@@ -11,30 +13,28 @@ export function TareaForm({ pacientes }: TareaFormProps) {
   const [state, formAction, isPending] = useActionState(crearTareaAction, null);
 
   return (
-    <form action={formAction}>
-      <div>
-        <label htmlFor="titulo">Título</label>
-        <input id="titulo" name="titulo" required />
-        {state?.error?.titulo && <p style={{ color: "red" }}>{state.error.titulo[0]}</p>}
+    <form action={formAction} className="mb-6">
+      <div className="grid gap-4 md:grid-cols-3">
+        <FormField label="Título" htmlFor="titulo" error={state?.error?.titulo?.[0]}>
+          <input id="titulo" name="titulo" required className={inputStyles} />
+        </FormField>
+        <FormField label="Fecha (opcional)" htmlFor="fecha">
+          <input id="fecha" name="fecha" type="date" className={inputStyles} />
+        </FormField>
+        <FormField label="Paciente (opcional)" htmlFor="pacienteId">
+          <select id="pacienteId" name="pacienteId" defaultValue="" className={inputStyles}>
+            <option value="">— Ninguno —</option>
+            {pacientes.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nombre} {p.apellidos}
+              </option>
+            ))}
+          </select>
+        </FormField>
       </div>
-      <div>
-        <label htmlFor="fecha">Fecha (opcional)</label>
-        <input id="fecha" name="fecha" type="date" />
-      </div>
-      <div>
-        <label htmlFor="pacienteId">Paciente (opcional)</label>
-        <select id="pacienteId" name="pacienteId" defaultValue="">
-          <option value="">— Ninguno —</option>
-          {pacientes.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nombre} {p.apellidos}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button type="submit" disabled={isPending}>
+      <Button type="submit" disabled={isPending} variant="secondary">
         {isPending ? "Añadiendo..." : "Añadir tarea"}
-      </button>
+      </Button>
     </form>
   );
 }
