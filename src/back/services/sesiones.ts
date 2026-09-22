@@ -30,3 +30,11 @@ export async function contarSesionesEstaSemana() {
     where: { fecha: { gte: inicioSemana } },
   });
 }
+
+export async function listarSesionesEntre(desde: Date, hasta: Date) {
+  return prisma.sesion.findMany({
+    where: { fecha: { gte: desde, lte: hasta } },
+    orderBy: { fecha: "asc" },
+    include: { paciente: true },
+  });
+}
