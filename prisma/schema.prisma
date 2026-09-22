@@ -21,6 +21,7 @@ model Paciente {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   sesiones        Sesion[]
+  objetivos       Objetivo[]
   tareas          Tarea[]
 }
 
@@ -109,6 +110,32 @@ model Tarea {
   updatedAt   DateTime  @updatedAt
   pacienteId  String?
   paciente    Paciente? @relation(fields: [pacienteId], references: [id], onDelete: SetNull)
+
+  @@index([pacienteId])
+}
+
+enum CategoriaObjetivo {
+  REGULACION_EMOCIONAL
+  HABILIDADES_SOCIALES
+  AUTOESTIMA
+  ATENCION
+  FRUSTRACION
+}
+
+enum EstadoObjetivo {
+  ACTIVO
+  CONSEGUIDO
+}
+
+model Objetivo {
+  id         String            @id @default(uuid())
+  nombre     String
+  categoria  CategoriaObjetivo
+  estado     EstadoObjetivo    @default(ACTIVO)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  pacienteId String
+  paciente   Paciente          @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
 
   @@index([pacienteId])
 }

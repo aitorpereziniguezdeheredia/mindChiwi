@@ -1,10 +1,17 @@
 import { notFound } from "next/navigation";
 import { obtenerPaciente } from "@/back/services/pacientes";
 import { listarSesionesDePaciente } from "@/back/services/sesiones";
-import { actualizarPacienteAction, eliminarPacienteAction } from "@/back/actions/pacientes";
+import {
+  actualizarPacienteAction,
+  eliminarPacienteAction,
+} from "@/back/actions/pacientes";
 import { crearSesionAction } from "@/back/actions/sesiones";
 import { PacienteForm } from "@/front/components/pacientes/PacienteForm";
 import { SesionForm } from "@/front/components/sesiones/SesionForm";
+import { listarObjetivosDePaciente } from "@/back/services/objetivos";
+import { crearObjetivoAction } from "@/back/actions/objetivos";
+import { ObjetivoForm } from "@/front/components/objetivos/ObjetivoForm";
+import { ObjetivoItem } from "@/front/components/objetivos/ObjetivoItem";
 
 export default async function PacienteDetailPage({
   params,
@@ -19,6 +26,8 @@ export default async function PacienteDetailPage({
   }
 
   const sesiones = await listarSesionesDePaciente(paciente.id);
+  const objetivos = await listarObjetivosDePaciente(paciente.id);
+  const crearObjetivoConId = crearObjetivoAction.bind(null, paciente.id);
 
   const actualizarConId = actualizarPacienteAction.bind(null, paciente.id);
   const eliminarConId = eliminarPacienteAction.bind(null, paciente.id);
@@ -54,6 +63,18 @@ export default async function PacienteDetailPage({
               {sesion.fecha.toLocaleDateString()} — {sesion.duracionMinutos} min
               {sesion.observaciones && <p>{sesion.observaciones}</p>}
             </li>
+          ))}
+        </ul>
+      )}
+      <h2>Objetivos</h2>
+      <ObjetivoForm action={crearObjetivoConId} />
+
+      {objetivos.length === 0 ? (
+        <p>Todavía no hay objetivos.</p>
+      ) : (
+        <ul>
+          {objetivos.map((o) => (
+            <ObjetivoItem key={o.id} objetivo={o} pacienteId={paciente.id} />
           ))}
         </ul>
       )}
