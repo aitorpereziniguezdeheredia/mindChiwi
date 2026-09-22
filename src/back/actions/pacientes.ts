@@ -8,6 +8,7 @@ import {
 } from "@/back/services/pacientes";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireSession } from "@/back/auth/require-session";
 
 export type PacienteFormState = {
   error?: Record<string, string[] | undefined>;
@@ -17,6 +18,8 @@ export async function crearPacienteAction(
   _prevState: PacienteFormState,
   formData: FormData
 ): Promise<PacienteFormState> {
+  await requireSession();
+
   const raw = {
     nombre: formData.get("nombre"),
     apellidos: formData.get("apellidos"),
@@ -41,6 +44,8 @@ export async function actualizarPacienteAction(
   _prevState: PacienteFormState,
   formData: FormData
 ): Promise<PacienteFormState> {
+  await requireSession();
+
   const raw = {
     nombre: formData.get("nombre"),
     apellidos: formData.get("apellidos"),
@@ -62,6 +67,8 @@ export async function actualizarPacienteAction(
 }
 
 export async function eliminarPacienteAction(id: string) {
+  await requireSession();
+
   await eliminarPaciente(id);
   revalidatePath("/pacientes");
   redirect("/pacientes");

@@ -3,6 +3,7 @@
 import { objetivoSchema } from "@/back/validations/objetivos";
 import { crearObjetivo, toggleObjetivoEstado } from "@/back/services/objetivos";
 import { revalidatePath } from "next/cache";
+import { requireSession } from "@/back/auth/require-session";
 
 export type ObjetivoFormState = {
   error?: Record<string, string[] | undefined>;
@@ -13,6 +14,8 @@ export async function crearObjetivoAction(
   _prevState: ObjetivoFormState,
   formData: FormData
 ): Promise<ObjetivoFormState> {
+  await requireSession();
+
   const raw = {
     nombre: formData.get("nombre"),
     categoria: formData.get("categoria"),
@@ -31,6 +34,8 @@ export async function crearObjetivoAction(
 }
 
 export async function toggleObjetivoAction(id: string, pacienteId: string, estado: "ACTIVO" | "CONSEGUIDO") {
+  await requireSession();
+
   await toggleObjetivoEstado(id, estado);
   revalidatePath(`/pacientes/${pacienteId}`);
 }

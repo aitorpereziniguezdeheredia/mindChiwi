@@ -3,6 +3,7 @@
 import { tareaSchema } from "@/back/validations/tareas";
 import { crearTarea, toggleTareaCompletada, eliminarTarea } from "@/back/services/tareas";
 import { revalidatePath } from "next/cache";
+import { requireSession } from "@/back/auth/require-session";
 
 export type TareaFormState = {
   error?: Record<string, string[] | undefined>;
@@ -12,6 +13,8 @@ export async function crearTareaAction(
   _prevState: TareaFormState,
   formData: FormData
 ): Promise<TareaFormState> {
+  await requireSession();
+
   const raw = {
     titulo: formData.get("titulo"),
     fecha: formData.get("fecha"),
@@ -31,11 +34,15 @@ export async function crearTareaAction(
 }
 
 export async function toggleTareaAction(id: string, completada: boolean) {
+  await requireSession();
+
   await toggleTareaCompletada(id, completada);
   revalidatePath("/tareas");
 }
 
 export async function eliminarTareaAction(id: string) {
+  await requireSession();
+
   await eliminarTarea(id);
   revalidatePath("/tareas");
 }

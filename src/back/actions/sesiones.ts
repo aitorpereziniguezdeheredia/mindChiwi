@@ -3,6 +3,7 @@
 import { sesionSchema } from "@/back/validations/sesiones";
 import { crearSesion } from "@/back/services/sesiones";
 import { revalidatePath } from "next/cache";
+import { requireSession } from "@/back/auth/require-session";
 
 export type SesionFormState = {
   error?: Record<string, string[] | undefined>;
@@ -13,6 +14,8 @@ export async function crearSesionAction(
   _prevState: SesionFormState,
   formData: FormData
 ): Promise<SesionFormState> {
+  await requireSession();
+
   const raw = {
     fecha: formData.get("fecha"),
     duracionMinutos: formData.get("duracionMinutos"),
