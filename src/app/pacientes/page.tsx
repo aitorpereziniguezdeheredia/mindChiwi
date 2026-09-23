@@ -4,6 +4,7 @@ import { AppNav } from "@/front/components/layout/AppNav";
 import { PageHeader } from "@/front/components/ui/PageHeader";
 import { Card } from "@/front/components/ui/Card";
 import { buttonBase, buttonStyles } from "@/front/components/ui/Button";
+import { calcularEdad } from "@/front/lib/calcularEdad";
 
 export default async function PacientesPage() {
   const pacientes = await listarPacientes();
@@ -28,8 +29,12 @@ export default async function PacientesPage() {
             <ul>
               {pacientes.map((paciente) => (
                 <li key={paciente.id} className="border-t border-[var(--line)] first:border-t-0">
-                  <Link href={`/pacientes/${paciente.id}`} className="block py-3 text-sm hover:text-[var(--pine)]">
-                    {paciente.nombre} {paciente.apellidos}
+                  <Link
+                    href={`/pacientes/${paciente.id}`}
+                    className="flex items-center justify-between py-3 text-sm hover:text-[var(--pine)]"
+                  >
+                    <span>{paciente.nombre} {paciente.apellidos}</span>
+                    <span className="text-[var(--ink-soft)]">{calcularEdad(paciente.fechaNacimiento)} años</span>
                   </Link>
                 </li>
               ))}

@@ -3,28 +3,78 @@ import { requireSession } from "@/back/auth/require-session";
 import { listarProximasSesiones, contarSesionesEstaSemana } from "@/back/services/sesiones";
 import { listarTareasPendientes, contarTareasPendientes } from "@/back/services/tareas";
 import { listarPacientesRecientes, contarPacientes } from "@/back/services/pacientes";
+import { obtenerSemana } from "@/back/services/calendario";
 import { AppNav } from "@/front/components/layout/AppNav";
 import { PageHeader } from "@/front/components/ui/PageHeader";
 import { Card } from "@/front/components/ui/Card";
+import { buttonBase, buttonStyles } from "@/front/components/ui/Button";
 
 export default async function DashboardPage() {
   const session = await requireSession();
 
-  const [proximasSesiones, tareasPendientes, pacientesRecientes, totalPacientes, totalTareasPendientes, sesionesEstaSemana] =
-    await Promise.all([
-      listarProximasSesiones(),
-      listarTareasPendientes(),
-      listarPacientesRecientes(),
-      contarPacientes(),
-      contarTareasPendientes(),
-      contarSesionesEstaSemana(),
-    ]);
+  const [
+    proximasSesiones,
+    tareasPendientes,
+    pacientesRecientes,
+    totalPacientes,
+    totalTareasPendientes,
+    sesionesEstaSemana,
+    dias,
+  ] = await Promise.all([
+    listarProximasSesiones(),
+    listarTareasPendientes(),
+    listarPacientesRecientes(),
+    contarPacientes(),
+    contarTareasPendientes(),
+    contarSesionesEstaSemana(),
+    obtenerSemana(new Date()),
+  ]);
+
+  const hoy = new Date().toDateString();
 
   return (
     <>
       <AppNav />
       <main className="max-w-5xl mx-auto px-7 py-10">
-        <PageHeader title={`Bienvenido, ${session.user.name}`} description="Esto es lo que tienes hoy." />
+        <PageHeader
+          title={`Bienvenido, ${session.user.name}`}
+          description="Esto es lo que tienes hoy."
+          action={
+            <div className="flex gap-3">
+              <Link href="/pacientes/nuevo" className={`${buttonBase} ${buttonStyles.primary}`}>
+                + Nuevo paciente
+              </Link>
+              <Link href="/tareas" className={`${buttonBase} ${buttonStyles.secondary}`}>
+                + Nueva tarea
+              </Link>
+            </div>
+          }
+        />
+
+        <Card className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-display text-lg font-medium">Esta semana</h2>
+            <Link href="/calendario" className="text-sm text-[var(--pine)] underline">
+              Ver calendario completo →
+            </Link>
+          </div>
+          <div className="grid grid-cols-7 gap-2">
+            {dias.map((dia) => {
+              const esHoy = dia.fecha.toDateString() === hoy;
+              return (
+                <div
+                  key={dia.fecha.toISOString()}
+                  className={`rounded-lg border p-2 text-center ${esHoy ? "border-[var(--pine)]" : "border-[var(--line)]"}`}
+                >
+                  <p className="text-xs text-[var(--ink-soft)] capitalize mb-1">
+                    {dia.fecha.toLocaleDateString("es-ES", { weekday: "short" })}
+                  </p>
+                  <p className="text-sm font-medium">{dia.sesiones.length}</p>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
 
         <div className="grid gap-5 md:grid-cols-2">
           <Card>
