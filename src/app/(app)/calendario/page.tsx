@@ -27,7 +27,7 @@ export default async function CalendarioPage() {
             </h3>
             {dia.sesiones.map((s) => (
               <DayChip key={s.id} variant="pine">
-                {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })} {s.paciente.nombre}
+                {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" })} {s.paciente.nombre}
               </DayChip>
             ))}
             {dia.tareas.map((t) => (

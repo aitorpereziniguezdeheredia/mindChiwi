@@ -64,7 +64,7 @@ export default async function DashboardPage() {
               </p>
               {dia.sesiones.map((s) => (
                 <DayChip key={s.id} variant="pine">
-                  {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })} {s.paciente.nombre}
+                  {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" })} {s.paciente.nombre}
                 </DayChip>
               ))}
               {dia.tareas.map((t) => (
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
                   <div>
                     <p className="font-medium">{s.paciente.nombre} {s.paciente.apellidos}</p>
                     <p className="text-xs text-[var(--ink-soft)]">
-                      {s.fecha.toLocaleDateString()} · {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                      {s.fecha.toLocaleDateString()} · {s.fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" })}
                     </p>
                   </div>
                 </li>

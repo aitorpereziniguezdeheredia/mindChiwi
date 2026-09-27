@@ -5,6 +5,7 @@ import { crearSesion } from "@/back/services/sesiones";
 import { revalidatePath } from "next/cache";
 import { requireSession } from "@/back/auth/require-session";
 import { redirect } from "next/navigation";
+import { combinarFechaHoraMadrid } from "@/front/lib/fechaMadrid";
 
 export type SesionFormState = {
   error?: Record<string, string[] | undefined>;
@@ -21,7 +22,10 @@ export async function crearSesionAction(
   const hora = formData.get("hora");
 
   const raw = {
-    fecha: fecha && hora ? `${fecha}T${hora}` : fecha,
+    fecha:
+      fecha && hora
+        ? combinarFechaHoraMadrid(String(fecha), String(hora))
+        : fecha,
     duracionMinutos: formData.get("duracionMinutos"),
     observaciones: formData.get("observaciones"),
   };
@@ -58,7 +62,10 @@ export async function crearSesionDesdeCalendarioAction(
   const hora = formData.get("hora");
 
   const raw = {
-    fecha: fecha && hora ? `${fecha}T${hora}` : fecha,
+    fecha:
+      fecha && hora
+        ? combinarFechaHoraMadrid(String(fecha), String(hora))
+        : fecha,
     duracionMinutos: formData.get("duracionMinutos"),
     observaciones: formData.get("observaciones"),
   };
