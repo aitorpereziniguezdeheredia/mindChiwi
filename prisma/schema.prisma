@@ -139,3 +139,21 @@ model Objetivo {
 
   @@index([pacienteId])
 }
+
+enum CategoriaRecurso {
+  EMOCIONES
+  AUTOESTIMA
+  HABILIDADES_SOCIALES
+  ATENCION
+  REGULACION_EMOCIONAL
+  FRUSTRACION
+  MIEDOS
+}
+
+model Recurso {
+  id          String           @id @default(uuid())
+  titulo      String
+  descripcion String
+  categoria   CategoriaRecurso
+  createdAt   DateTime         @default(now())
+}
