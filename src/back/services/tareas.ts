@@ -32,3 +32,11 @@ export async function listarTareasPendientes(limite = 5) {
 export async function contarTareasPendientes() {
   return prisma.tarea.count({ where: { completada: false } });
 }
+
+export async function listarTareasEntre(desde: Date, hasta: Date) {
+  return prisma.tarea.findMany({
+    where: { fecha: { gte: desde, lte: hasta } },
+    orderBy: { fecha: "asc" },
+    include: { paciente: true },
+  });
+}

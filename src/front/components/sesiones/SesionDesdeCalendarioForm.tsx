@@ -1,22 +1,46 @@
 "use client";
 
 import { useActionState } from "react";
-import type { SesionFormState } from "@/back/actions/sesiones";
+import { crearSesionDesdeCalendarioAction } from "@/back/actions/sesiones";
 import { FormField, inputStyles } from "@/front/components/ui/FormField";
 import { Button } from "@/front/components/ui/Button";
 
-type SesionFormProps = {
-  action: (
-    prevState: SesionFormState,
-    formData: FormData,
-  ) => Promise<SesionFormState>;
+type SesionDesdeCalendarioFormProps = {
+  pacientes: { id: string; nombre: string; apellidos: string }[];
 };
 
-export function SesionForm({ action }: SesionFormProps) {
-  const [state, formAction, isPending] = useActionState(action, null);
+export function SesionDesdeCalendarioForm({
+  pacientes,
+}: SesionDesdeCalendarioFormProps) {
+  const [state, formAction, isPending] = useActionState(
+    crearSesionDesdeCalendarioAction,
+    null,
+  );
 
   return (
-    <form action={formAction} className="mb-6">
+    <form action={formAction}>
+      <FormField
+        label="Paciente"
+        htmlFor="pacienteId"
+        error={state?.error?.pacienteId?.[0]}
+      >
+        <select
+          id="pacienteId"
+          name="pacienteId"
+          defaultValue=""
+          className={inputStyles}
+          required
+        >
+          <option value="" disabled>
+            Selecciona un paciente
+          </option>
+          {pacientes.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombre} {p.apellidos}
+            </option>
+          ))}
+        </select>
+      </FormField>
       <div className="grid gap-4 md:grid-cols-3">
         <FormField
           label="Fecha"
@@ -62,8 +86,8 @@ export function SesionForm({ action }: SesionFormProps) {
           rows={2}
         />
       </FormField>
-      <Button type="submit" disabled={isPending} variant="secondary">
-        {isPending ? "Guardando..." : "Añadir sesión"}
+      <Button type="submit" disabled={isPending} className="w-full">
+        {isPending ? "Guardando..." : "Crear sesión"}
       </Button>
     </form>
   );

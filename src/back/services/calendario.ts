@@ -1,4 +1,5 @@
 import { listarSesionesEntre } from "@/back/services/sesiones";
+import { listarTareasEntre } from "@/back/services/tareas";
 
 function inicioDeSemana(fecha: Date) {
   const d = new Date(fecha);
@@ -19,7 +20,11 @@ function finDeSemana(inicio: Date) {
 export async function obtenerSemana(fechaReferencia: Date) {
   const inicio = inicioDeSemana(fechaReferencia);
   const fin = finDeSemana(inicio);
-  const sesiones = await listarSesionesEntre(inicio, fin);
+
+  const [sesiones, tareas] = await Promise.all([
+    listarSesionesEntre(inicio, fin),
+    listarTareasEntre(inicio, fin),
+  ]);
 
   return Array.from({ length: 7 }, (_, i) => {
     const dia = new Date(inicio);
@@ -27,6 +32,7 @@ export async function obtenerSemana(fechaReferencia: Date) {
     return {
       fecha: dia,
       sesiones: sesiones.filter((s) => s.fecha.toDateString() === dia.toDateString()),
+      tareas: tareas.filter((t) => t.fecha && t.fecha.toDateString() === dia.toDateString()),
     };
   });
 }

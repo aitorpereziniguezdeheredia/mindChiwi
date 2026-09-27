@@ -8,6 +8,18 @@ export async function crearPaciente(data: PacienteInput) {
 export async function listarPacientes() {
   return prisma.paciente.findMany({
     orderBy: { createdAt: "desc" },
+    include: {
+      sesiones: {
+        where: { fecha: { gte: new Date() } },
+        orderBy: { fecha: "asc" },
+        take: 1,
+      },
+      objetivos: {
+        where: { estado: "ACTIVO" },
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
   });
 }
 

@@ -9,7 +9,6 @@ import { PacienteForm } from "@/front/components/pacientes/PacienteForm";
 import { SesionForm } from "@/front/components/sesiones/SesionForm";
 import { ObjetivoForm } from "@/front/components/objetivos/ObjetivoForm";
 import { ObjetivoItem } from "@/front/components/objetivos/ObjetivoItem";
-import { AppNav } from "@/front/components/layout/AppNav";
 import { PageHeader } from "@/front/components/ui/PageHeader";
 import { Card } from "@/front/components/ui/Card";
 import { Button } from "@/front/components/ui/Button";
@@ -38,8 +37,6 @@ export default async function PacienteDetailPage({
 
   return (
     <>
-      <AppNav />
-      <main className="max-w-5xl mx-auto px-7 py-10">
         <PageHeader
           title={`${paciente.nombre} ${paciente.apellidos}`}
           action={
@@ -101,7 +98,6 @@ export default async function PacienteDetailPage({
             )}
           </Card>
         </div>
-      </main>
     </>
   );
 }
